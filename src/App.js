@@ -1,24 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import { useDispatch, useSelector } from "react-redux";
+import { TaskCard } from "./component/Cards/task.card";
+import { Header } from "./component/Header";
+import { AddTaskInputBar } from "./component/AddTask";
+import { ToggleHideTask } from "./store/action/global";
+import {
+  AddTask,
+  DeleteTask,
+  HideTask,
+  MarkComplete,
+} from "./store/action/task";
 
 function App() {
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
+  // console.log(state);
+  const AddTaskFunc = (name) => dispatch(AddTask({ name }));
+
+  const handleMarkComplete = (id) => dispatch(MarkComplete({ id }));
+
+  const handleDeleteTask = (id) => dispatch(DeleteTask({ id }));
+
+  const handleHideTask = (e) => {
+    dispatch(HideTask({ boolean: e.target.checked }));
+    dispatch(ToggleHideTask({ boolean: e.target.checked }));
+  };
+
+  const TaskList = () => state?.Task?.Task?.filter((item) => !item?.isComplete);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header
+        taskGlobal={state?.Global.Hidden}
+        handleHideTask={handleHideTask}
+        TaskList={TaskList}
+      />
+      <AddTaskInputBar handleAdd={AddTaskFunc} />
+      {state?.Task?.Task?.map((item, i) => (
+        <TaskCard
+          key={i}
+          task={item}
+          handleMarkComplete={handleMarkComplete}
+          handleDeleteTask={handleDeleteTask}
+        />
+      ))}
+    </>
   );
 }
 

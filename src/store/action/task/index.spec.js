@@ -1,5 +1,6 @@
 import { AddTask, DeleteTask, HideTask, MarkComplete } from ".";
 import { store } from "../..";
+import { v4 as uuidv4 } from "uuid";
 
 describe(`Task Action`, () => {
   it(`Add Task`, () => {
@@ -16,13 +17,17 @@ describe(`Task Action`, () => {
 
   it(`Mark Completed`, () => {
     const ExpectedValue = {
-      Task: [{ id: 1, isComplete: true, isHidden: false, name: "test1" }],
+      Task: [
+        { id: 2, name: "test2", isComplete: false, isHidden: false },
+        { id: 1, name: "test1", isComplete: true, isHidden: false },
+      ],
     };
+
+    store.dispatch(AddTask({ id: 2, name: "test2" }));
 
     store.dispatch(MarkComplete({ id: 1 }));
 
     const { Task } = store.getState();
-
     expect(Task).toEqual(ExpectedValue);
   });
 
@@ -34,7 +39,6 @@ describe(`Task Action`, () => {
       ],
     };
 
-    store.dispatch(AddTask({ id: 2, name: "test2" }));
     store.dispatch(HideTask({ boolean: true }));
 
     const { Task } = store.getState();
@@ -52,5 +56,13 @@ describe(`Task Action`, () => {
     const { Task } = store.getState();
 
     expect(Task).toEqual(ExpectedValue);
+  });
+
+  it(`Without ID`, () => {
+    store.dispatch(AddTask({ name: "test3" }));
+
+    const { Task } = store.getState();
+
+    expect(Task?.Task[0].name).toEqual("test3");
   });
 });

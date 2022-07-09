@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import { AddTaskInputBar } from ".";
 
@@ -17,5 +17,16 @@ describe(`<AddTaskInputBar />`, () => {
     RenderAddTaskInputBarhBar();
     user.type(inputbar(), "test1");
     expect(inputbar()).toHaveValue("test1");
+  });
+
+  it(`Handle onKeyDown`, () => {
+    const handleAdd = jest.fn();
+    render(<AddTaskInputBar handleAdd={handleAdd} />);
+
+    fireEvent.keyDown(inputbar(), {
+      key: "Enter",
+      code: "Enter",
+    });
+    expect(inputbar()).toHaveValue("");
   });
 });

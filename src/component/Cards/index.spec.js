@@ -1,6 +1,8 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, rerender } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import { TaskCard } from "./task.card";
+import { store } from "../../store";
+import { AddTask, DeleteTask, MarkComplete } from "../../store/action/task";
 
 describe(`<TaskCard />`, () => {
   const SampleTask = {
@@ -22,17 +24,40 @@ describe(`<TaskCard />`, () => {
     expect(Card).toBeInTheDocument();
   });
 
-  //   it(`Mark Complete Function`, () => {
-  //     const handleMarkComplete = (id) => id;
-  //     render(
-  //       <TaskCard task={SampleTask} handleMarkComplete={handleMarkComplete} />
-  //     );
+  it(`Mark Complete Function`, () => {
+    const handleMarkComplete = (id) => store.dispatch(MarkComplete({ id }));
+    store.dispatch(AddTask(SampleTask));
+    render(
+      <TaskCard task={SampleTask} handleMarkComplete={handleMarkComplete} />
+    );
 
-  //     const MarkCheckBox = screen.getByTestId("mark-checkbox");
+    const MarkCheckBox = screen.getByTestId("mark-checkbox");
+    user.click(MarkCheckBox);
+    const { Task } = store.getState();
 
-  //     const output = user.click(MarkCheckBox);
-  //     expect(handleMarkComplete).toHaveBeenCalled();
-  //   });
+    expect(Task?.Task).toEqual([
+      { id: 1, name: "test1", isComplete: true, isHidden: false },
+    ]);
+  });
+
+  it(`Check Line Through`, () => {
+    const { Task } = store.getState();
+    render(<TaskCard task={Task?.Task[0]} />);
+
+    const RenderLineThrough = screen.getByTestId("line-through");
+    expect(RenderLineThrough).toHaveClass("line-through text-slate-500");
+  });
+
+  it(`Mark Delete Function`, () => {
+    const handleDeleteTask = (id) => store.dispatch(DeleteTask({ id }));
+    store.dispatch(AddTask(SampleTask));
+    render(<TaskCard task={SampleTask} handleDeleteTask={handleDeleteTask} />);
+    rerender;
+    const DeleteButtonTask = screen.getByTestId("delete-task-button");
+    user.click(DeleteButtonTask);
+    const { Task } = store.getState();
+    expect(Task?.Task).toEqual([]);
+  });
 
   it(`Not Render Task Card`, () => {
     SampleTask.isHidden = true;

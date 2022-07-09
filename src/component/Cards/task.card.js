@@ -18,6 +18,7 @@ export const TaskCard = ({ task, handleMarkComplete, handleDeleteTask }) => {
               />
             </div>
             <div
+              data-testid="line-through"
               className={`text-lg font-semibold capitalize tracking-widest ${
                 task?.isComplete && "line-through text-slate-500"
               }`}
@@ -26,6 +27,7 @@ export const TaskCard = ({ task, handleMarkComplete, handleDeleteTask }) => {
             </div>
           </div>
           <button
+            data-testid="delete-task-button"
             onClick={() => {
               handleDeleteTask(task?.id);
             }}

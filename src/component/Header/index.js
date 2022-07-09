@@ -16,6 +16,7 @@ export const Header = ({ handleHideTask, taskGlobal, TaskList }) => {
               className=""
               type="checkbox"
               onChange={handleHideTask}
+              data-testid="hide-task"
             />
             <div className="text-sm font-semibold">Hide Completed Task</div>
           </div>

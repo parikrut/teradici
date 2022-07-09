@@ -1,6 +1,4 @@
-# Local
-
-- Recommended to use Node 16
+# Local (Node Version 16)
 
 Install NPM Dependency
 
